@@ -2,15 +2,41 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import { useState } from 'react'
+import { gql, useMutation } from '@apollo/client'
+import { useAuthContext } from '@/contexts/AuthContext'
+import { useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const LOGIN = gql`
+  mutation SignIn($signInInput: SignInInput!) {
+      signIn(signInInput: $signInInput) {
+      accessToken
+    }
+  }
+`
 
 export default function Home() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [signIn, { data, loading, error }] = useMutation(LOGIN)
+  const { accessToken, logIn } = useAuthContext()
+  const router = useRouter();
 
-  function handleSubmit(userEmail: string, userPassword: string) {
-    console.log(userEmail, userPassword)
+  async function handleLogin(userEmail: string, userPassword: string) {
+    const { data, errors } = await signIn({
+      variables: {
+        "signInInput": {
+          "email": userEmail,
+          "password": userPassword
+        }
+      }
+    })
+
+    if(data.signIn.accessToken) {
+      await logIn(data.signIn.accessToken)
+      router.push('profile')
+    }
   }
 
   return (
@@ -50,9 +76,9 @@ export default function Home() {
                 value={password}
               />
               </label>
-              <button type='button' onClick={() => handleSubmit(email, password)}>LogIn</button>
+              <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-white hover:text-gray-700 border border-gray-700' type='button' onClick={() => handleLogin(email, password)}>LogIn</button>
             </form>
-            <p className='text-sm'>
+            <p className='text-sm rounded-md border border-gray-700 mt-3'>
               Create an account
             </p>
           </div>
