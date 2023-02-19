@@ -1,10 +1,11 @@
+import Note from "@/components/note"
 import { client } from "@/lib/apolloClient"
 import { gql } from "@apollo/client"
 import jwtDecode from "jwt-decode"
 import { useEffect, useState } from "react"
 import { useCookies } from "react-cookie"
 
-type Note = {
+type NoteType = {
     id: string
     title: string
     content: string
@@ -31,7 +32,7 @@ const NOTES_BY_USER = gql`
 export default function Notes() {
     const [cookie] = useCookies(["jwt"]);
     const [loggedUser, setLoggedUser] = useState<LoggedUser>()
-    const [notes, setNotes] = useState() 
+    const [notes, setNotes] = useState<NoteType[]>() 
 
     useEffect(() => {
         if(cookie.jwt) {
@@ -46,13 +47,22 @@ export default function Notes() {
                 }
             }).then(
                 function(value) {
-                    setNotes(value.data)
+                    setNotes(value.data.notesByUser)
                 }
             )
         }
     }, [])
-
+    console.log(notes)
     return (
-        <h1>NOTES PAGE</h1>
+           <>
+            <h1>NOTES PAGE</h1>
+            <div className="h-screen grid grid-cols-3 gap-5">
+                {notes?.map((note, index) => {
+                    return (
+                        <Note id={note.id} title={note.title} content={note.content} key={index}/>
+                    )
+                })}
+            </div>
+           </>
     )
 }
