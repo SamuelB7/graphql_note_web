@@ -1,3 +1,4 @@
+import Header from "@/components/header"
 import Note from "@/components/note"
 import { client } from "@/lib/apolloClient"
 import { gql } from "@apollo/client"
@@ -52,17 +53,19 @@ export default function Notes() {
             )
         }
     }, [])
-    console.log(notes)
     return (
-           <>
-            <h1>NOTES PAGE</h1>
-            <div className="h-screen grid grid-cols-3 gap-5">
-                {notes?.map((note, index) => {
-                    return (
-                        <Note id={note.id} title={note.title} content={note.content} key={index}/>
-                    )
-                })}
+        <>
+            <Header />
+            <div className="m-3">
+                <h1>My Notes</h1>
+                <div className="h-screen grid grid-cols-3 gap-5">
+                    {notes?.map((note, index) => {
+                        return (
+                            <Note id={note.id} title={note.title} content={note.content} key={index} />
+                        )
+                    })}
+                </div>
             </div>
-           </>
+        </>
     )
 }

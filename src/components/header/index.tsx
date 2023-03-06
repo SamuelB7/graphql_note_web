@@ -2,13 +2,16 @@ import Link from "next/link";
 
 export default function Header() {
     return (
-        <div>
-            <Link href="/">
-                <h3>Notes</h3>
+        <div className="flex items-center gap-5 justify-end text-gray-700">
+            <Link href="/notes">
+                <h3>My Notes</h3>
             </Link>
-            <Link href="/">
+            <Link href="/notes/create">
+                <h3>Add Note</h3>
+            </Link>
+            {/* <Link href="/">
                 <h3>Profile</h3>
-            </Link>
+            </Link> */}
             <Link href="/">
                 <h3>Logout</h3>
             </Link>
