@@ -35,7 +35,7 @@ export default function Home() {
 
     if(data.signIn.accessToken) {
       await logIn(data.signIn.accessToken)
-      router.push('profile')
+      router.push('notes')
     }
   }
 

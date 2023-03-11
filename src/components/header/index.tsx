@@ -6,9 +6,6 @@ export default function Header() {
             <Link href="/notes">
                 <h3>My Notes</h3>
             </Link>
-            <Link href="/notes/create">
-                <h3>Add Note</h3>
-            </Link>
             {/* <Link href="/">
                 <h3>Profile</h3>
             </Link> */}
