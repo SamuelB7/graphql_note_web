@@ -61,8 +61,9 @@ const DELETE_NOTE = gql`
 `
 
 export default function Notes() {
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
+    const [isEditFormOpen, setIsEditFormOpen] = useState(false)
+    const [noteId, setNoteId] = useState('')
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [cookie] = useCookies(["jwt"]);
@@ -98,15 +99,11 @@ export default function Notes() {
 
         setTitle('')
         setContent('')
-        setIsCreateModalOpen(false)
+        setIsCreateFormOpen(false)
     }
 
-    function handleOpenModal(isOpen: boolean, noteId: string, title: string, content: string) {
-        setIsEditModalOpen(!isEditModalOpen)
-        console.log(noteId)
-    }
-
-    async function handleEditNote(noteId: string, title: string, content: string) {
+    async function handleEditNote(event: FormEvent) {
+        event.preventDefault()
         await editNote({
             variables: {
                 "updateNoteInput": {
@@ -123,9 +120,17 @@ export default function Notes() {
             refetchQueries: [NOTES_BY_USER]
         })
 
+        setNoteId('')
         setTitle('')
         setContent('')
-        setIsEditModalOpen(false)
+        setIsEditFormOpen(false)
+    }
+
+    function handleEditForm(noteId: string, title: string, content: string) {
+        setIsEditFormOpen(true)
+        setNoteId(noteId)
+        setTitle(title)
+        setContent(content)
     }
 
     async function handleDeleteNote(noteId: string) {
@@ -147,9 +152,12 @@ export default function Notes() {
             <Header />
             <div>
                 <div className="flex gap-3">
-                    <button onClick={() => setIsCreateModalOpen(!isCreateModalOpen)}>{isCreateModalOpen ? 'Close' : 'Add Note'}</button>
+                    {isEditFormOpen ?
+                        <button onClick={() => setIsEditFormOpen(!isEditFormOpen)}>{isEditFormOpen && 'Close'}</button> :
+                        <button onClick={() => setIsCreateFormOpen(!isCreateFormOpen)}>{isCreateFormOpen ? 'Close' : 'Add Note'}</button>
+                    }
                 </div>
-                {isCreateModalOpen &&
+                {isCreateFormOpen &&
                     <div className="absolute w-full h-full z-10 bg-gray-500 bg-opacity-50">
                         <div className="flex justify-center items-center h-screen">
                             <form onSubmit={handleCreateNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
@@ -169,10 +177,11 @@ export default function Notes() {
                         </div>
                     </div>
                 }
-                {/* {isEditModalOpen &&
+
+                {isEditFormOpen &&
                     <div className="absolute w-full h-full z-10 bg-gray-500 bg-opacity-50">
                         <div className="flex justify-center items-center h-screen">
-                            <form onSubmit={handleCreateNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
+                            <form onSubmit={handleEditNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
                                 <span className='text-gray-700'>Title</span>
                                 <input
                                     type="text"
@@ -184,11 +193,12 @@ export default function Notes() {
                                 <span className='text-gray-700'>Content</span>
                                 <textarea className="mt-1 block w-auto rounded-md border-gray-300 shadow-sm" rows={5} value={content} onChange={(e) => setContent(e.target.value)} />
 
-                                <button className="text-white bg-gray-700 p-3 rounded-md" type="submit">Add Note</button>
+                                <button className="text-white bg-gray-700 p-3 rounded-md" type="submit">Update Note</button>
                             </form>
                         </div>
                     </div>
-                } */}
+                }
+
                 <div className="h-screen grid grid-cols-3 gap-5">
                     {data?.notesByUser?.map((note: NoteType, index: number) => {
                         return (
@@ -198,7 +208,7 @@ export default function Notes() {
                                     <p>{note.content}</p>
                                 </div>
                                 <div className="flex gap-3">
-                                    <button onClick={() => handleOpenModal(!isEditModalOpen ,note.id, note.title, note.content)}>Edit</button>
+                                    <button onClick={() => handleEditForm(note.id, note.title, note.content)}>Edit</button>
                                     <button onClick={() => handleDeleteNote(note.id)} className="bg-red-500 rounded p-1 text-white">Delete</button>
                                 </div>
                             </div>
