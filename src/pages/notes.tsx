@@ -133,6 +133,13 @@ export default function Notes() {
         setContent(content)
     }
 
+    function closeEditForm() {
+        setNoteId('')
+        setTitle('')
+        setContent('')
+        setIsEditFormOpen(false)
+    }
+
     async function handleDeleteNote(noteId: string) {
         await deleteNote({
             variables: {
@@ -153,7 +160,7 @@ export default function Notes() {
             <div>
                 <div className="flex gap-3">
                     {isEditFormOpen ?
-                        <button onClick={() => setIsEditFormOpen(!isEditFormOpen)}>{isEditFormOpen && 'Close'}</button> :
+                        <button onClick={() => closeEditForm()}>{isEditFormOpen && 'Close'}</button> :
                         <button onClick={() => setIsCreateFormOpen(!isCreateFormOpen)}>{isCreateFormOpen ? 'Close' : 'Add Note'}</button>
                     }
                 </div>
@@ -202,7 +209,7 @@ export default function Notes() {
                 <div className="h-screen grid grid-cols-3 gap-5">
                     {data?.notesByUser?.map((note: NoteType, index: number) => {
                         return (
-                            <div className="flex flex-col justify-between border border-gray-500 rounded rounded-md w-auto h-auto p-5" key={index}>
+                            <div className="flex flex-col justify-between border border-gray-500 rounded-md w-auto max-h-80 h-auto p-5" key={index}>
                                 <div>
                                     <h1 className="font-bold">{note.title}</h1>
                                     <p>{note.content}</p>
