@@ -9,33 +9,36 @@ import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const LOGIN = gql`
-  mutation SignIn($signInInput: SignInInput!) {
-      signIn(signInInput: $signInInput) {
+const SIGN_UP= gql`
+  mutation SignUp($signUpInput: SignUpInput!) {
+    signUp(signUpInput: $signUpInput) {
       accessToken
     }
   }
 `
 
-export default function Home() {
+export default function SignUp() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [signIn, { data, loading, error }] = useMutation(LOGIN)
-  const { accessToken, logIn } = useAuthContext()
+  const [signUp] = useMutation(SIGN_UP)
+  const { logIn } = useAuthContext()
   const router = useRouter();
 
-  async function handleLogin(userEmail: string, userPassword: string) {
-    const { data, errors } = await signIn({
+  async function handleSignUp(userName: string, userEmail: string, userPassword: string) {
+    const { data, errors } = await signUp({
       variables: {
-        "signInInput": {
+        "signUpInput": {
+          "name": userName,
           "email": userEmail,
           "password": userPassword
         }
       }
     })
+    console.log(data)
 
-    if(data.signIn.accessToken) {
-      await logIn(data.signIn.accessToken)
+    if(data.signUp.accessToken) {
+      await logIn(data.signUp.accessToken)
       router.push('notes')
     }
   }
@@ -55,9 +58,19 @@ export default function Home() {
               Note App
             </h1>
             <h2 className='text-2xl'>
-              LogIn
+              SignUp
             </h2>
             <form className='flex flex-col text-left'>
+            <label>
+                <span className='text-gray-700'>Name</span>
+                <input
+                  type="text"
+                  className='mt-1 w-full rounded-md border-gray-300 shadow-sm'
+                  placeholder='John'
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                />
+              </label>
               <label>
                 <span className='text-gray-700'>Email address</span>
                 <input
@@ -77,11 +90,11 @@ export default function Home() {
                 value={password}
               />
               </label>
-              <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-white hover:text-gray-700 border border-gray-700' type='button' onClick={() => handleLogin(email, password)}>LogIn</button>
+              <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-white hover:text-gray-700 border border-gray-700' type='button' onClick={() => handleSignUp(name, email, password)}>SignUp</button>
             </form>
-            <Link href='signup'>
+            <Link href='/'>
               <button className='text-sm rounded-md border border-gray-700 mt-3 w-full'>
-                Create an account
+                Already have an account?
               </button>
             </Link>
           </div>
