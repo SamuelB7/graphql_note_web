@@ -167,60 +167,17 @@ export default function Notes() {
                         }
                     </div>
                     {isCreateFormOpen &&
-                        <div className="absolute w-full h-full z-10 bg-gray-500 bg-opacity-50">
-                            <div className="flex justify-center items-center h-screen">
-                                <form onSubmit={handleCreateNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
-                                    <span className='text-gray-700'>Title</span>
-                                    <input
-                                        type="text"
-                                        value={title}
-                                        className="mt-1 w-auto rounded-md border-gray-300 shadow-sm"
-                                        onChange={(e) => setTitle(e.target.value)}
-                                    />
-
-                                    <span className='text-gray-700'>Content</span>
-                                    <textarea className="mt-1 block w-auto rounded-md border-gray-300 shadow-sm" rows={5} value={content} onChange={(e) => setContent(e.target.value)} />
-
-                                    <button className="text-white bg-gray-700 p-3 rounded-md" type="submit">Add Note</button>
-                                </form>
-                            </div>
-                        </div>
+                        <NoteForm handleForm={handleCreateNote} setTitle={setTitle} setContent={setContent} title={title} content={content} action="post" />
                     }
 
                     {isEditFormOpen &&
-                        <div className="absolute w-full h-full z-10 bg-gray-500 bg-opacity-50">
-                            <div className="flex justify-center items-center h-screen">
-                                <form onSubmit={handleEditNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
-                                    <span className='text-gray-700'>Title</span>
-                                    <input
-                                        type="text"
-                                        value={title}
-                                        className="mt-1 w-auto rounded-md border-gray-300 shadow-sm"
-                                        onChange={(e) => setTitle(e.target.value)}
-                                    />
-
-                                    <span className='text-gray-700'>Content</span>
-                                    <textarea className="mt-1 block w-auto rounded-md border-gray-300 shadow-sm" rows={5} value={content} onChange={(e) => setContent(e.target.value)} />
-
-                                    <button className="text-white bg-gray-700 p-3 rounded-md" type="submit">Update Note</button>
-                                </form>
-                            </div>
-                        </div>
+                       <NoteForm handleForm={handleEditNote} setTitle={setTitle} setContent={setContent} title={title} content={content} action="put"/>
                     }
 
                     <div className="grid grid-cols-3 gap-5">
                         {data?.notesByUser?.map((note: NoteType, index: number) => {
                             return (
-                                <div className="flex flex-col justify-between border border-gray-500 rounded-md w-auto max-h-80 p-5" key={index}>
-                                    <div>
-                                        <h1 className="font-bold">{note.title}</h1>
-                                        <p>{note.content}</p>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <button onClick={() => handleEditForm(note.id, note.title, note.content)}>Edit</button>
-                                        <button onClick={() => handleDeleteNote(note.id)} className="bg-red-500 rounded p-1 text-white">Delete</button>
-                                    </div>
-                                </div>
+                                <Note id={note.id} title={note.title} content={note.content} handleEditForm={handleEditForm} handleDeleteNote={handleDeleteNote} key={index} />
                             )
                         })}
                     </div>
