@@ -42,14 +42,8 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Note App</title>
-        <meta name="description" content="Note app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main>
-        <div className='flex flex-col justify-center items-center h-screen border text-center'>
+        <div className='flex flex-col justify-center items-center h-screen border text-center bg-gray-300'>
           <div className='p-7 border border-gray-500 rounded-md border-solid'>
             <h1 className="text-3xl font-bold">
               Note App
@@ -62,22 +56,24 @@ export default function Home() {
                 <span className='text-gray-700'>Email address</span>
                 <input
                   type="email"
-                  className='mt-1 w-full rounded-md border-gray-300 shadow-sm'
+                  className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
                   placeholder='john@example.com'
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
+                  required
                 />
               </label>
               <label>
                 <span className='text-gray-700'>Password</span>
                 <input
                 type="password"
-                className='mt-1 w-full rounded-md border-gray-300 shadow-sm'
+                className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
+                required
               />
               </label>
-              <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-white hover:text-gray-700 border border-gray-700' type='button' onClick={() => handleLogin(email, password)}>LogIn</button>
+              <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-gray-300 hover:text-gray-700 border border-gray-700' type='button' onClick={() => handleLogin(email, password)}>LogIn</button>
             </form>
             <Link href='signup'>
               <button className='text-sm rounded-md border border-gray-700 mt-3 w-full'>

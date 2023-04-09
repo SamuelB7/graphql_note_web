@@ -1,6 +1,3 @@
-import { useAuthContext } from "@/contexts/AuthContext"
-import { gql, useMutation } from "@apollo/client"
-
 type NoteProps = {
     id: string
     title: string
@@ -11,14 +8,14 @@ type NoteProps = {
 
 export default function Note({ id, title, content, handleDeleteNote, handleEditForm }: NoteProps) {
     return (
-        <div className="flex flex-col justify-between border border-gray-500 rounded-md w-auto max-h-80 p-5">
+        <div className="flex flex-col gap-3 justify-between border border-gray-500 rounded-md p-5">
             <div>
                 <h1 className="font-bold">{title}</h1>
                 <p>{content}</p>
             </div>
             <div className="flex gap-3">
-                <button onClick={() => handleEditForm(id, title, content)}>Edit</button>
-                <button onClick={() => handleDeleteNote(id)} className="bg-red-500 rounded p-1 text-white">Delete</button>
+                <button onClick={() => handleEditForm(id, title, content)} className="text-gray-300 bg-gray-700 rounded-lg text-sm px-5 py-2.5 text-center">Edit</button>
+                <button onClick={() => handleDeleteNote(id)} className="bg-red-500 text-white rounded-lg text-sm px-5 py-2.5 text-center">Delete</button>
             </div>
         </div>
     )
