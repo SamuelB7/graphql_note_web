@@ -1,13 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
 import { useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import { useAuthContext } from '@/contexts/AuthContext'
 import { useRouter } from 'next/router'
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
 
 const SIGN_UP= gql`
   mutation SignUp($signUpInput: SignUpInput!) {
@@ -26,30 +23,38 @@ export default function SignUp() {
   const router = useRouter();
 
   async function handleSignUp(userName: string, userEmail: string, userPassword: string) {
-    const { data, errors } = await signUp({
-      variables: {
-        "signUpInput": {
-          "name": userName,
-          "email": userEmail,
-          "password": userPassword
+    try {
+      const { data } = await signUp({
+        variables: {
+          "signUpInput": {
+            "name": userName,
+            "email": userEmail,
+            "password": userPassword
+          }
         }
+      })
+  
+      if(data.signUp.accessToken) {
+        await logIn(data.signUp.accessToken)
+        router.push('notes')
       }
-    })
-
-    if(data.signUp.accessToken) {
-      await logIn(data.signUp.accessToken)
-      router.push('notes')
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
     }
   }
 
   return (
     <>
-      <Head>
-        <title>Note App</title>
-        <meta name="description" content="Note app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main>
         <div className='flex flex-col justify-center items-center h-screen border text-center'>
           <div className='p-7 border border-gray-500 rounded-md border-solid'>
