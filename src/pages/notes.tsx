@@ -1,6 +1,8 @@
-import Header from "@/components/header"
-import Note from "@/components/note"
-import NoteForm from "@/components/noteForm"
+
+import Header from "@/components/Header"
+import Layout from "@/components/Layout"
+import Note from "@/components/Note"
+import NoteForm from "@/components/NoteForm"
 import { useAuthContext } from "@/contexts/AuthContext"
 import { client } from "@/lib/apolloClient"
 import { gql, useMutation, useQuery } from "@apollo/client"
@@ -133,6 +135,13 @@ export default function Notes() {
         setContent(content)
     }
 
+    function closeCreateForm() {
+        setNoteId('')
+        setTitle('')
+        setContent('')
+        setIsCreateFormOpen(false)
+    }
+
     function closeEditForm() {
         setNoteId('')
         setTitle('')
@@ -155,74 +164,30 @@ export default function Notes() {
     }
 
     return (
-        <>
-            <Header />
+        <Layout title="My Notes">
             <div>
-                <div className="flex gap-3">
+                <div className="mb-5">
                     {isEditFormOpen ?
-                        <button onClick={() => closeEditForm()}>{isEditFormOpen && 'Close'}</button> :
-                        <button onClick={() => setIsCreateFormOpen(!isCreateFormOpen)}>{isCreateFormOpen ? 'Close' : 'Add Note'}</button>
+                        <button type="button" className="block text-gray-300 bg-gray-700 rounded-lg text-sm px-5 py-2.5 text-center" onClick={() => closeEditForm()}>{isEditFormOpen && 'Close'}</button> :
+                        <button type="button" className="block text-gray-300 bg-gray-700 rounded-lg text-sm px-5 py-2.5 text-center" onClick={() => setIsCreateFormOpen(!isCreateFormOpen)}>{isCreateFormOpen ? 'Close' : 'Add Note'}</button>
                     }
                 </div>
                 {isCreateFormOpen &&
-                    <div className="absolute w-full h-full z-10 bg-gray-500 bg-opacity-50">
-                        <div className="flex justify-center items-center h-screen">
-                            <form onSubmit={handleCreateNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
-                                <span className='text-gray-700'>Title</span>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    className="mt-1 w-auto rounded-md border-gray-300 shadow-sm"
-                                    onChange={(e) => setTitle(e.target.value)}
-                                />
-
-                                <span className='text-gray-700'>Content</span>
-                                <textarea className="mt-1 block w-auto rounded-md border-gray-300 shadow-sm" rows={5} value={content} onChange={(e) => setContent(e.target.value)} />
-
-                                <button className="text-white bg-gray-700 p-3 rounded-md" type="submit">Add Note</button>
-                            </form>
-                        </div>
-                    </div>
+                    <NoteForm handleForm={handleCreateNote} setTitle={setTitle} setContent={setContent} title={title} content={content} action="post" closeForm={closeCreateForm} />
                 }
 
                 {isEditFormOpen &&
-                    <div className="absolute w-full h-full z-10 bg-gray-500 bg-opacity-50">
-                        <div className="flex justify-center items-center h-screen">
-                            <form onSubmit={handleEditNote} className="flex justify-center items-center flex-col gap-3 p-5 border bg-white rounded-md">
-                                <span className='text-gray-700'>Title</span>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    className="mt-1 w-auto rounded-md border-gray-300 shadow-sm"
-                                    onChange={(e) => setTitle(e.target.value)}
-                                />
-
-                                <span className='text-gray-700'>Content</span>
-                                <textarea className="mt-1 block w-auto rounded-md border-gray-300 shadow-sm" rows={5} value={content} onChange={(e) => setContent(e.target.value)} />
-
-                                <button className="text-white bg-gray-700 p-3 rounded-md" type="submit">Update Note</button>
-                            </form>
-                        </div>
-                    </div>
+                    <NoteForm handleForm={handleEditNote} setTitle={setTitle} setContent={setContent} title={title} content={content} action="put" closeForm={closeEditForm} />
                 }
 
-                <div className="h-screen grid grid-cols-3 gap-5">
+                <div className="grid grid-cols-3 gap-5 max-[420px]:grid-cols-1">
                     {data?.notesByUser?.map((note: NoteType, index: number) => {
                         return (
-                            <div className="flex flex-col justify-between border border-gray-500 rounded-md w-auto max-h-80 h-auto p-5" key={index}>
-                                <div>
-                                    <h1 className="font-bold">{note.title}</h1>
-                                    <p>{note.content}</p>
-                                </div>
-                                <div className="flex gap-3">
-                                    <button onClick={() => handleEditForm(note.id, note.title, note.content)}>Edit</button>
-                                    <button onClick={() => handleDeleteNote(note.id)} className="bg-red-500 rounded p-1 text-white">Delete</button>
-                                </div>
-                            </div>
+                            <Note id={note.id} title={note.title} content={note.content} handleEditForm={handleEditForm} handleDeleteNote={handleDeleteNote} key={index} />
                         )
                     })}
                 </div>
             </div>
-        </>
+        </Layout>
     )
 }

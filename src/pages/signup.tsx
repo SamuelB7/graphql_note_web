@@ -35,7 +35,6 @@ export default function SignUp() {
         }
       }
     })
-    console.log(data)
 
     if(data.signUp.accessToken) {
       await logIn(data.signUp.accessToken)
