@@ -1,6 +1,6 @@
 import { useCookies } from "react-cookie";
 import jwtDecode from "jwt-decode";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -26,7 +26,7 @@ export default function Profile() {
         }
     }, [])
 
-    function checkPassword(e) {
+    function checkPassword(e: FormEvent<HTMLFormElement>) {
         if (password != repeatPassword) {
             toast.error("passwords don't match", {
                 position: "top-right",
