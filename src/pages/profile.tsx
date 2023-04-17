@@ -28,7 +28,6 @@ export default function Profile() {
 
     function checkPassword() {
         if (password != repeatPassword) {
-            console.log("passwords don't match")
             toast.error("passwords don't match", {
                 position: "top-right",
                 autoClose: 5000,
