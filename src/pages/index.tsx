@@ -1,13 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
 import { useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import { useAuthContext } from '@/contexts/AuthContext'
 import { useRouter } from 'next/router'
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
 
 const LOGIN = gql`
   mutation SignIn($signInInput: SignInInput!) {
@@ -20,23 +17,37 @@ const LOGIN = gql`
 export default function Home() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [signIn, { data, loading, error }] = useMutation(LOGIN)
-  const { accessToken, logIn } = useAuthContext()
+  const [signIn] = useMutation(LOGIN)
+  const { logIn } = useAuthContext()
   const router = useRouter();
 
   async function handleLogin(userEmail: string, userPassword: string) {
-    const { data, errors } = await signIn({
-      variables: {
-        "signInInput": {
-          "email": userEmail,
-          "password": userPassword
+    try {
+      const { data } = await signIn({
+        variables: {
+          "signInInput": {
+            "email": userEmail,
+            "password": userPassword
+          }
         }
-      }
-    })
+      })
 
-    if(data.signIn.accessToken) {
-      await logIn(data.signIn.accessToken)
-      router.push('notes')
+      if (data.signIn.accessToken) {
+        await logIn(data.signIn.accessToken)
+        router.push('notes')
+      }
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
     }
   }
 
@@ -51,6 +62,7 @@ export default function Home() {
             <h2 className='text-2xl'>
               LogIn
             </h2>
+            <ToastContainer />
             <form className='flex flex-col text-left'>
               <label>
                 <span className='text-gray-700'>Email address</span>
@@ -66,12 +78,12 @@ export default function Home() {
               <label>
                 <span className='text-gray-700'>Password</span>
                 <input
-                type="password"
-                className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                required
-              />
+                  type="password"
+                  className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  required
+                />
               </label>
               <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-gray-300 hover:text-gray-700 border border-gray-700' type='button' onClick={() => handleLogin(email, password)}>LogIn</button>
             </form>

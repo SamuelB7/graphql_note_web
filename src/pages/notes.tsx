@@ -1,12 +1,8 @@
-
-import Header from "@/components/Header"
 import Layout from "@/components/Layout"
 import Note from "@/components/Note"
 import NoteForm from "@/components/NoteForm"
 import { useAuthContext } from "@/contexts/AuthContext"
-import { client } from "@/lib/apolloClient"
 import { gql, useMutation, useQuery } from "@apollo/client"
-import jwtDecode from "jwt-decode"
 import { FormEvent, useEffect, useState } from "react"
 import { useCookies } from "react-cookie"
 
@@ -14,14 +10,6 @@ type NoteType = {
     id: string
     title: string
     content: string
-}
-
-type LoggedUser = {
-    id: string
-    name: string
-    email: string
-    iat: number
-    exp: number
 }
 
 const NOTES_BY_USER = gql`
