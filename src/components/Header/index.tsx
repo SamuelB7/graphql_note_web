@@ -10,7 +10,7 @@ export default function Header(props: HeaderProps) {
 
     return (
         <div className="flex">
-            <h1 className="font-black text-3xl text-gray-900 dark:text-gray-100">
+            <h1 className="font-black text-3xl text-gray-900">
                 {props.title}
             </h1>
         </div>
