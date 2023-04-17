@@ -1,7 +1,8 @@
 import { useCookies } from "react-cookie";
-import jwtDecode, { JwtPayload } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
+import { ToastContainer, toast } from "react-toastify";
 
 type LoggedUser = {
     id: string
@@ -22,23 +23,32 @@ export default function Profile() {
     useEffect(() => {
         if (cookie.jwt) {
             setLoggedUser(jwtDecode(cookie.jwt))
-            setEmail(loggedUser?.email ? loggedUser?.email : "")
-            setUserName(loggedUser?.name ? loggedUser?.name : "")
         }
     }, [])
 
     function checkPassword() {
         if (password != repeatPassword) {
             console.log("passwords don't match")
+            toast.error("passwords don't match", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
         } else {
             console.log("passwords match")
         }
-        
+
     }
 
     return (
         <Layout title="Profile">
             <div className='flex flex-col justify-center items-center text-center'>
+                <ToastContainer />
                 <form className='flex flex-col text-left'>
                     <label>
                         <span className='text-gray-700'>User Name</span>
@@ -46,7 +56,7 @@ export default function Profile() {
                             type="text"
                             className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
                             onChange={(e) => setUserName(e.target.value)}
-                            value={userName}
+                            value={loggedUser?.name}
                             required
                         />
                     </label>
@@ -57,7 +67,7 @@ export default function Profile() {
                             className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
                             placeholder='john@example.com'
                             onChange={(e) => setEmail(e.target.value)}
-                            value={email}
+                            value={loggedUser?.email}
                             required
                         />
                     </label>
@@ -79,8 +89,8 @@ export default function Profile() {
                             required
                         />
                     </label>
-                    
-                    <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-gray-300 hover:text-gray-700 border border-gray-700' type='button' onClick={checkPassword}>LogIn</button>
+
+                    <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-gray-300 hover:text-gray-700 border border-gray-700' type='button' onClick={checkPassword}>Update</button>
                 </form>
             </div>
         </Layout>

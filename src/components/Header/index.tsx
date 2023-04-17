@@ -1,5 +1,4 @@
 import { useAuthContext } from "@/contexts/AuthContext";
-import Link from "next/link";
 
 type HeaderProps = {
     title: string 

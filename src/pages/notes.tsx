@@ -3,7 +3,7 @@ import Note from "@/components/Note"
 import NoteForm from "@/components/NoteForm"
 import { useAuthContext } from "@/contexts/AuthContext"
 import { gql, useMutation, useQuery } from "@apollo/client"
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useState } from "react"
 import { useCookies } from "react-cookie"
 
 type NoteType = {
