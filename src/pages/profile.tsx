@@ -26,7 +26,7 @@ export default function Profile() {
         }
     }, [])
 
-    function checkPassword() {
+    function checkPassword(e) {
         if (password != repeatPassword) {
             toast.error("passwords don't match", {
                 position: "top-right",
@@ -38,9 +38,8 @@ export default function Profile() {
                 progress: undefined,
                 theme: "light",
             })
-        } else {
-            console.log("passwords match")
-        }
+            e.preventDefault()
+        } 
 
     }
 
@@ -89,7 +88,7 @@ export default function Profile() {
                         />
                     </label>
 
-                    <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-gray-300 hover:text-gray-700 border border-gray-700' type='button' onClick={checkPassword}>Update</button>
+                    <button className='text-white bg-gray-700 mt-4 rounded-md hover:bg-gray-300 hover:text-gray-700 border border-gray-700' type='button' onClick={(e) => checkPassword(e)}>Update</button>
                 </form>
             </div>
         </Layout>
