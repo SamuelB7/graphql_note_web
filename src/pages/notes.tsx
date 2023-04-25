@@ -168,7 +168,7 @@ export default function Notes() {
                     <NoteForm handleForm={handleEditNote} setTitle={setTitle} setContent={setContent} title={title} content={content} action="put" closeForm={closeEditForm} />
                 }
 
-                <div className="grid grid-cols-4 gap-5 max-[420px]:grid-cols-1">
+                <div className="grid grid-flow-row gap-8 text-gray-900 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {data?.notesByUser?.map((note: NoteType, index: number) => {
                         return (
                             <Note id={note.id} title={note.title} content={note.content} handleEditForm={handleEditForm} handleDeleteNote={handleDeleteNote} key={index} />
