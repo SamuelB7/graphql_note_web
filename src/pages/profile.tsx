@@ -1,8 +1,9 @@
 import { useCookies } from "react-cookie";
 import jwtDecode from "jwt-decode";
-import { FormEvent, MouseEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { gql, useMutation } from "@apollo/client";
 
 type LoggedUser = {
@@ -34,25 +35,10 @@ export default function Profile() {
     useEffect(() => {
         if (cookie.jwt) {
             setLoggedUser(jwtDecode(cookie.jwt))
+            setEmail(jwtDecode(cookie.jwt).email)
+            setUserName(jwtDecode(cookie.jwt).name)
         }
     }, [])
-
-    function checkPassword(e: any) {
-        if (password != repeatPassword) {
-            toast.error("Passwords don't match", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            })
-            e.preventDefault()
-            return
-        }
-    }
 
     async function handlePublicUpdateUser(e: any) {
         if (password && repeatPassword) {
@@ -72,13 +58,25 @@ export default function Profile() {
             }
         }
 
-        await publicUpdateUser({
+        let updateInput: any = {}
+
+        if (userName) {
+            updateInput["name"] = userName
+        }
+
+        if (email) {
+            updateInput["email"] = email
+        }
+
+        if(password) {
+            updateInput["password"] = password
+        }
+
+        console.log(updateInput)
+
+        const {data, errors} = await publicUpdateUser({
             variables: {
-                "updateUserInput": {
-                    "name": userName,
-                    "email": email,
-                    "password": password
-                }
+                "updateUserInput": updateInput
             },
             context: {
                 headers: {
@@ -86,6 +84,34 @@ export default function Profile() {
                 }
             },
         })
+        
+        if(data) {
+            console.log("SUCCESS: ", data)
+            toast.success("User updated successfully", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+        }
+
+        if(errors) {
+            console.log("ERRORS: ", errors)
+            toast.error("Error on update user, try again", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+        }
     }
 
     return (
@@ -99,7 +125,7 @@ export default function Profile() {
                             type="text"
                             className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
                             onChange={(e) => setUserName(e.target.value)}
-                            value={loggedUser?.name}
+                            value={userName}
                             required
                         />
                     </label>
@@ -110,7 +136,7 @@ export default function Profile() {
                             className='mt-1 w-full rounded-md bg-gray-300 shadow-sm'
                             placeholder='john@example.com'
                             onChange={(e) => setEmail(e.target.value)}
-                            value={loggedUser?.email}
+                            value={email}
                             required
                         />
                     </label>
