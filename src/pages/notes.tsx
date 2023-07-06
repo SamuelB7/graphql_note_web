@@ -67,7 +67,8 @@ export default function Notes() {
             headers: {
                 Authorization: `Bearer ${cookie.jwt}`
             }
-        }
+        },
+        fetchPolicy: 'no-cache'
     })
 
     async function handleCreateNote(event: FormEvent) {
